@@ -34,6 +34,7 @@ struct ContentView3: View {
                             .foregroundColor(.orange)
                         Text(movie.title)
                     }
+                    .listRowSeparator(.hidden)
                 }
             }
             
@@ -47,9 +48,9 @@ struct ContentView3: View {
                 }
             }
         }
-//        .listStyle(DefaultListStyle())
-//        .listStyle(PlainListStyle())
-//        .listStyle(GroupedListStyle())
+        //        .listStyle(DefaultListStyle())
+        //        .listStyle(PlainListStyle())
+        //        .listStyle(GroupedListStyle())
     }
 }
 

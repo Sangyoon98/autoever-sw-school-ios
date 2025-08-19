@@ -16,9 +16,9 @@ struct Fruit2: Identifiable {
 struct ContentView2: View {
 //    let fruits = ["사과", "바나나", "오렌지"]
     let fruits = [
-        Fruit(name: "사과", imageName: "applelogo"),
-        Fruit(name: "바나나", imageName: "leaf"),
-        Fruit(name: "오렌지", imageName: "sun.max.fill")
+        Fruit2(name: "사과", imageName: "applelogo"),
+        Fruit2(name: "바나나", imageName: "leaf"),
+        Fruit2(name: "오렌지", imageName: "sun.max.fill")
     ]
     
     var body: some View {
