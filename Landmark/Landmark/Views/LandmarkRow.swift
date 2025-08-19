@@ -22,7 +22,7 @@ struct LandmarkRow: View {
 }
 
 #Preview("그룹") {
-    Group {
+    VStack {
         LandmarkRow(landmark: landmarks[0])
         LandmarkRow(landmark: landmarks[1])
     }
