@@ -302,6 +302,8 @@ names.append(contentsOf: ["조기환", "조기환"])
 names.insert("김호민", at: 2)
 names.insert(contentsOf: ["조기환", "조기환"], at: 2)
 
+var names4 = ["조기환", "조기환"]
+var name5: Int? = names4.firstIndex(of: "조기환")
 names.firstIndex(of: "조기환")
 names.first
 names.last
@@ -309,3 +311,101 @@ names.last
 // 요소를 삭제한 후에 삭제한 요소 반환해준다.
 let firstName = names.removeFirst() // last도 마찬가지
 let firstName2 = names.remove(at: 2)
+
+print(names4[0...1])    // 범위 연산자 사용
+
+// 딕셔너리 : 요소들이 순서 없이 키와 값의 쌍으로 구성되는 컬렉션 타입
+var numberForName: Dictionary<String, Int> = Dictionary<String, Int>()
+typealias NameNumberDict = Dictionary<String, Int>
+var numberForName2: NameNumberDict = Dictionary<String, Int>()
+
+var numberForName3: [String: Int] = [String: Int]()
+var numberForName4: NameNumberDict = NameNumberDict()   // 타입별칭 사용해서 빈 딕셔너리 생성
+var numberForName5: [String: Int] = [:]
+var numberForName6: [String: Int] = ["조기환": 100, "김호민": 200]
+
+print(numberForName6.isEmpty)
+print(numberForName6.count)
+
+//print(numberForName6["조기환"])
+//print(numberForName6["김호민"])
+
+numberForName6["조기환"] = 1000
+//print(numberForName6["조기환"])
+
+numberForName6["아무개"] = 2000
+print(numberForName6)
+
+
+//print(numberForName6.removeValue(forKey: "김호민"))
+print(numberForName6)
+
+print(numberForName6["박수홍", default: 0])
+
+// 셋 Set : 같은 타입의 데이터를 순서 없이 하나의 묶음으로 저장하는 형태의 컬렉션 타입
+// 보통 순서가 중요하지 않거나 각 요소가 유일한 값이어야 할 때 사용한다.
+var namesSet: Set<String> = Set<String>()
+var namesSet2: Set<String> = []
+
+var nameSet3: Set<String> = ["조기환", "김호민", "김호민"]
+print(nameSet3)
+
+var nameSet4: Set<String> = ["조기환", "김호민", "김호민"]
+
+// 배열과 컬렉션에서 사용하는 함수 기본적으로 동일
+nameSet4.insert("아무개")
+//nameSet4.append("조기환")  // 셋에서 .append()는 사용하지 않는다.
+
+nameSet4.remove("아무개")
+
+// 집합연산
+let unionSet: Set<String> = ["조기환", "김호민", "아무개"]
+let unionSet2: Set<String> = ["조기환", "김호민", "박명수"]
+
+// 교집합
+print(unionSet.intersection(unionSet2))
+print(unionSet2.intersection(unionSet))
+
+// 여집합
+print(unionSet.symmetricDifference(unionSet2))
+print(unionSet2.symmetricDifference(unionSet))
+
+// 합집합
+print(unionSet.union(unionSet2))
+print(unionSet2.union(unionSet))
+
+// 차집합
+print(unionSet.subtracting(unionSet2))
+print(unionSet2.subtracting(unionSet))
+
+var array: [Int] = [1, 2, 3, 4, 5]
+//print(array.randomElement())
+print(array.shuffled())
+print(array)
+array.shuffle()
+print(array)
+
+// 열거형
+enum School {
+    case elementary
+    case middle
+    case high
+}
+
+enum School2 {
+    case elementary, middle, high
+}
+
+// 열거형 변수 선언
+var studentSchool: School = .elementary
+
+// 열거형의 원시값
+enum School3: String {
+    case elementary = "초등학교"
+    case middle = "중학교"
+    case high = "고등학교"
+}
+
+var studentSchool2: School3 = .elementary
+print(studentSchool2.rawValue)
+
