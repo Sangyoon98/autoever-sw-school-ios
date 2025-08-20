@@ -393,7 +393,7 @@ enum School {
 }
 
 enum School2 {
-    case elementary, middle, high
+    case elementary, middle, high   // 열거형의 케이스는 소문자 카멜케이스로 작성한다.
 }
 
 // 열거형 변수 선언
@@ -408,4 +408,3 @@ enum School3: String {
 
 var studentSchool2: School3 = .elementary
 print(studentSchool2.rawValue)
-
