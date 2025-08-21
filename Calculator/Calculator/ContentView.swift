@@ -60,11 +60,11 @@ struct ContentView: View {
     }
     
     func calculate() -> String? {
-        let a: Int? = Int(inputA)
-        let b: Int? = Int(inputB)
+//        let a: Int? = Int(inputA)
+//        let b: Int? = Int(inputB)
         
         // 함수 안에서는 guard-let을 통한 옵셔널 바인딩을 한다.
-        guard let a = a, let b = b else {
+        guard let a = Int(inputA), let b = Int(inputB) else {
             print("정수형으로 변환되지 않습니다.")
             return nil
         }

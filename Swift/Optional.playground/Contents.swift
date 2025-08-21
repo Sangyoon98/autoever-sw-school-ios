@@ -124,7 +124,7 @@ var e2: Int? = nil
 print(e1!)
 print(e2!)
 
-var e3: Int! = 10
+/*var e3: Int! = 10
 var e4: Int! = nil
 print(e3!)
 //print(e4!)
@@ -132,4 +132,107 @@ print(e3!)
 if let e3Int = e3, let e4Int = e4 {
     print(e3Int)
     print(e4Int)
+}*/
+
+print("---------------------")
+
+var e10: String = "안녕하세요. "
+
+var e3: String? = "조기환입니다."
+var e4: String! = "조기환입니다."
+//print(e3.count) // 일반 옵셔널 타입은 컴파일 에러남
+print(e3!.count)    // 일반 옵셔널 타입은 추출 해줘야 함
+print(e4.count) // 암시적 추출 옵셔널 타입은 이미 강제 추출되어 있기 때문에 따로 느낌표 안 써줘도 된다.
+
+e10.append(e3!)
+e10.append(e4)
+
+print(e10)
+
+// 여전히 타입은 옵셔널
+print(e3)
+print(e4)
+
+
+// MARK: - 1. 옵셔널(Optional)
+// 값이 있을 수도 있고 없을 수도 있는 타입입니다.
+// 값이 있을 때: Optional(값) 형태로 저장됨
+// 값이 없을 때: nil
+// enum 구조로 되어있음 → some(값), none
+
+var username: String?   // 옵셔널
+username = "조기범"
+print("옵셔널 예시: \(username)") // 출력: Optional("조기범")
+// 실사용: 서버에서 사용자 데이터를 가져올 때, 데이터가 없을 수 있으므로 옵셔널 사용
+
+
+// MARK: - 2. nil
+// 옵셔널 타입에서 "값이 없다"는 상태를 나타냅니다.
+// 변수를 선언할 때 초기값을 안 주면 자동으로 nil 저장
+// nil 비교로 값이 있는지 확인 가능
+
+var score: Int? = nil  // 초기값 없음
+if score == nil {
+    print("nil 예시: 점수가 없습니다.")
+}
+
+score = 95
+print("nil 예시: 값 할당 후: \(score)") // 출력: Optional(95)
+
+
+// MARK: - 3. 강제 추출 (Forced Unwrapping)
+// 옵셔널 값 뒤에 ! 붙여서 강제로 값을 가져옴
+// 값이 없으면 런타임 에러 발생 → 조심해서 사용
+
+var message: String? = "Hello, Swift"
+print("강제 추출 예시: \(message!)") // 출력: Hello, Swift
+
+message = nil
+// print(message!)  // 실행 시 크래시: Unexpectedly found nil
+// 주로 반드시 값이 있다고 보장되는 경우에만 사용
+
+
+// MARK: - 4. 옵셔널 바인딩 (Optional Binding)
+// 값이 있을 때만 안전하게 언래핑하는 방법
+// if let / guard let 사용
+// 특징: 값이 nil이 아니면 실행, nil이면 else 블록 실행
+// 장점: 강제 언래핑보다 안전하고 가독성이 높음
+
+var optionalName: String? = "Student"
+
+// if let 예시
+if let name = optionalName {
+    print("옵셔널 바인딩 예시(if let): 환영합니다, \(name)!") // 출력: 환영합니다, Student!
+} else {
+    print("옵셔널 바인딩 예시(if let): 이름이 없습니다.")
+}
+
+// guard let 예시
+func greetUser(_ user: String?) {
+    guard let name = user else {
+        print("옵셔널 바인딩 예시(guard let): 이름이 없습니다.")
+        return
+    }
+    print("옵셔널 바인딩 예시(guard let): 환영합니다, \(name)")
+}
+
+greetUser(optionalName)  // 출력: 환영합니다, Student!
+greetUser(nil)           // 출력: 이름이 없습니다.
+
+
+// MARK: - 5. 암시적 추출 옵셔널 (Implicitly Unwrapped Optional)
+// 옵셔널이지만 값을 자동으로 언래핑해주는 타입
+// 선언 시 String! 같이 느낌표 사용
+// 값이 무조건 있다고 보장될 때 사용 (예: IBOutlet)
+// 주의: nil일 경우 강제 언래핑처럼 크래시 발생
+
+var implicitName: String! = "Teacher"
+print("암시적 추출 옵셔널 예시: \(implicitName)") // 출력: Teacher
+
+implicitName = nil
+// print(implicitName)  // 실행 시 크래시: Unexpectedly found nil
+
+var labelText: String! = "UILabel text"
+if let text = labelText {
+    print("암시적 추출 옵셔널 바인딩 예시: \(text)") // 출력: UILabel text
 }
