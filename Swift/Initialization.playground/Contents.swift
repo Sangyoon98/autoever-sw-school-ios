@@ -95,7 +95,7 @@ let f = F(f1: 100)  // 사용자가 정의한 이니셜라이저가 없더라도
 /// - 저장 프로퍼티가 기본값도 없고 초기화도 되지 않는 생성자는 제공하지 않는다.
 struct FF {
     var fff1: Int
-    var fff2: Int
+    var fff2: Int = 200
     
 //    init(fff1: Int, fff2: Int) {
 //        self.fff1 = fff1
@@ -103,5 +103,90 @@ struct FF {
 //    }
 }
 let ff2 = FF(fff1: 100, fff2: 200)
+//let ff3 = FF()
+let ff4 = FF(fff1: 1000)
+//let ff5 = FF(fff2: 1000)
 print("ff2.fff1: \(ff2.fff1)")
 print("ff2.fff2: \(ff2.fff2)")
+
+
+/// 클래스의 이니셜라이저
+/// - 반면 클래스는 구조체와 달리 자동 생성자를 제공하지 않는다.
+/// - 특정 저장프로퍼티의 기본값이 없거나 초기화 해줄 수 있는 이니셜라이저가 없을 때 에러가 발생한다.
+//class G {
+//    var g1: Int
+//}
+//let g = G()
+//let g2 = G(g1:100)
+
+// 기본값을 설정하거나
+class G {
+    var g1: Int = 100
+}
+let g = G()
+
+// 생성자로 초깃값을 설정해야 한다.
+class H {
+    var h1: Int
+    init(h1: Int) {
+        self.h1 = h1
+    }
+}
+let h = H(h1: 100)
+
+// 또는, 옵셔널 저장 프로퍼티를 둘 수 있다.
+class I {
+    var i1: Int?
+}
+let i = I()
+print(i.i1) // i1은 생성되면서 초깃값이 nil로 설정된다.
+i.i1 = 100
+print(i.i1) // 옵셔널 타입이기 때문에 옵셔널로 출력된다.
+if let i = i.i1 {
+    print(i)
+}
+
+/// 실패 가능한 이니셜라이저
+/// - 이니셜라이저를 통해 인스턴스를 초기화 할 수 없는 여러가지 상황이 있을 수 있다.
+class Person {
+    var name: String
+    init?(name: String) {
+        if name.isEmpty {
+            return nil
+        }
+        self.name = name
+    }
+}
+let person1: Person? = Person(name: "")
+if let person1 = person1 {
+    print(person1.name)
+} else {
+    print("Person 인스턴스 생성에 실패했습니다.")
+}
+
+let person2: Person? = Person(name: "채상윤")
+if let person2 = person2 {
+    print("\(person2.name) 이름의 Person 인스턴스가 잘 생성되었습니다.")
+} else {
+    print("Person 인스턴스 생성에 실패했습니다.")
+}
+
+
+/// 인스턴스의 소멸
+/// - 디이니셜라이저(소멸자)
+/// - 메모리에서 해제되기 직전에 실행된다.
+/// - 클래스에만 구현할 수 있다.
+/// - 클래스의 인스턴스가 소멸될 때 외부 파일을 저장하고 닫아주는 등의 작업을 위해 사용한다.
+class FileWorkClass {
+    var fileName: String
+    init(fileName: String) {
+        self.fileName = fileName
+        print("\(self.fileName)을 불러왔습니다.")
+    }
+    deinit {
+        print("\(self.fileName) 피일을 저장했습니다.")
+    }
+}
+var fileWork1: FileWorkClass? = FileWorkClass(fileName: "test1.txt")
+var fileWork2 = fileWork1
+fileWork1 = nil
