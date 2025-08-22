@@ -104,6 +104,7 @@ class Person3 {
 
 
 /// - 자식클래스 인스턴스를 부모클래스 참조 변수에 담게 되면 부모 클래스 멤버에만 접근 가능하다.
+/// - 이 때 자식 클래스에서 재정의한 메서드를 호출하면 부모 클래스의 메서드가 아닌 자식 클래스의 메서드가 호출된다.
 class Person4 {
     var name: String = ""
     var age: Int = 0
@@ -119,8 +120,6 @@ class Student4: Person4 {
     /// 메서드 재정의(Overriding)
     /// - 부모 클래스로부터 상속 받은 신스턴스 메서드를 자식 클래스에서 용도에 맞도록 재정의 할 수 있다.
     override func introduction() {
-        // 메서드 재정의를 했다 하더라도 부모 클래스의 메서드를 호출 할 수 있다.
-        super.introduction()
         print("이름은 \(name)이고 \(age)살이고 \(grade)성적입니다.")
     }
     
