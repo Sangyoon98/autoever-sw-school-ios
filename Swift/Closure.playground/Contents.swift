@@ -117,3 +117,17 @@ let calculated6 = calculate2(a: 20, b: 30) { $0 + $1 }
 
 print("calculated6: \(calculated6)")
 
+let numbers: [Int] = [1, 2, 3, 4, 5]
+let newNumbers = numbers.map { $0 * 2 } // [2, 4, 6, 8, 10]
+let newNumbers2 = numbers.map() { $0 * 2 }
+let newNumbers3 = numbers.map() { (item: Int) -> Int in
+    return item * 2
+}
+//let newNumbers4 = numbers.map(transform: { (item: Int) -> Int in
+//    return item * 2
+//})
+
+// 말로 풀어보면
+// "Array.map()아 너 Array의 각 아이템 하나씩 꺼내서 내가 던져주는 함수로 수행해주고 새로운 Array 반환해주는 아이지?
+// 내가 아이템에 곱하기 2하는 함수 던져줄게."
+print("newNumbers3: \(newNumbers3)")
