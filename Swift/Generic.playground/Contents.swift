@@ -70,7 +70,7 @@ func mySwap<T>(a: inout T, b: inout T) {
 // Int일 때
 var a3 = 10
 var b3 = 20
-//mySwap<Int>(a: &a3, b: &b3)
+//mySwap<Int>(a: &a3, b: &b3)   // 스위프트 최신 버전에서 명시적 제네릭 타입 변수 생략
 mySwap(a: &a3, b: &b3)  // 매개변수로 전달되는 전달인자 타입이 Int이므로 생략 가능하다. T -> Int
 print("a3: \(a3)")
 print("b3: \(b3)")
@@ -132,6 +132,5 @@ func printA<T: TestProtocol> (value: T) {
     print(value.a)
 }
 
-//printA<Int>(value: 100)
-
+//printA<TestClass>(value: TestClass())
 printA(value: TestClass())
