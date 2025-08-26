@@ -24,17 +24,22 @@ struct ContentView: View {
                         hasToggle: true,
                         toggleState: $airPlaneMode
                     )
-                    SettingRow(
-                        title: "Wi-Fi",
-                        subTitle: "rapa_classroom-5",
-                        icon: "wifi",
-                        iconColor: .blue
-                    )
+//                    NavigationLink(destination: WifiView()) {
+//                        SettingRow(
+//                            title: "Wi-Fi",
+//                            subTitle: "rapa_classroom-5",
+//                            icon: "wifi",
+//                            iconColor: .blue,
+//                            destination: AnyView(WifiView())
+//                        )
+//                    }
+                    
                     SettingRow(
                         title: "Bluetooth",
                         subTitle: "켬",
                         icon: "bluetooth",
-                        iconColor: .blue
+                        iconColor: .blue,
+                        destination: AnyView(BluetoothView())
                     )
                     SettingRow(
                         title: "셀룰러",
@@ -68,7 +73,7 @@ struct ContentView: View {
                     )
                     SettingRow(
                         title: "손쉬운 사용",
-                        icon: "hand.raised.fill",
+                        icon: "accessibility",
                         iconColor: .blue
                     )
                     SettingRow(
@@ -235,14 +240,14 @@ struct SettingRow: View {
     let icon: String
     let iconColor: Color
     var hasNavigation: Bool = true
-    //    var destination: AnyView = AnyView(Text("Setting"))
+    var destination: AnyView? = AnyView(Text("Setting"))
     var hasToggle: Bool = false
     var toggleState: Binding<Bool>? = nil
     
     var content: some View {
         HStack {
             Image(systemName: icon)
-                .frame(width: 30, height: 30)
+                .frame(width: 32, height: 32)
                 .foregroundStyle(.white)
                 .background(iconColor)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -261,7 +266,7 @@ struct SettingRow: View {
         if hasToggle, let toggleState {
             HStack {
                 Image(systemName: icon)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 32, height: 32)
                     .foregroundStyle(.white)
                     .background(iconColor)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -272,7 +277,7 @@ struct SettingRow: View {
                     .labelsHidden()
             }
         } else if hasNavigation {
-            NavigationLink(destination: Text("destination")) {
+            NavigationLink(destination: destination) {
                 content
             }
         } else {
