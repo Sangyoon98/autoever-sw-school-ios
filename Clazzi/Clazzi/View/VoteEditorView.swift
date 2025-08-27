@@ -1,13 +1,14 @@
 //
-//  CreateVoteView.swift
+//  VoteEditorView.swift
 //  Clazzi
 //
 //  Created by 채상윤 on 8/26/25.
 //
 
 import SwiftUI
+import SwiftData
 
-struct CreateVoteView: View {
+struct VoteEditorView: View {
     // 뒤로 가기 (모달(바텀 시트) 닫기)
     @Environment(\.dismiss) private var dismiss
     
@@ -65,13 +66,19 @@ struct CreateVoteView: View {
                 .navigationTitle(Text(existingVote == nil ? "투표 생성 화면" : "투표 수정 화면"))
                 .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
                 
-                // 생성하기 버튼
+                // 생성, 수정하기 버튼
                 Button(action: {
-                    let newOptions = options.map {
-                        VoteOption(name: $0)
+                    if let vote = existingVote {
+                        // 기존 객체를 직접 수정
+                        vote.title = title
+                        
+                        // 기존 옵션 삭제 후 새로 생성
+                        vote.options = options.map { VoteOption(name: $0) }
+                        onSave(vote)
+                    } else {
+                        let newVote = Vote(title: title, options: options.map { VoteOption(name: $0) })
+                        onSave(newVote)
                     }
-                    let vote = Vote(title: title, options: newOptions)
-                    onSave(vote)
                     dismiss()
                 }) {
                     Text(existingVote == nil ? "생성하기" : "수정하기")
@@ -88,5 +95,34 @@ struct CreateVoteView: View {
 }
 
 #Preview {
-    CreateVoteView() { _ in }
+//    do {
+//        // 인메모리 ModelContainer 생성
+//        let container = try ModelContainer(
+//            for: Vote.self, VoteOption.self,
+//            configurations: ModelConfiguration(isStoredInMemory: true)
+//        )
+//        
+//        // 샘플 데이터 추가
+//        let sampleVote1 = Vote(title: "샘플 투표 1", options: [
+//            VoteOption(name: "옵션 1"),
+//            VoteOption(name: "옵션 2")
+//        ])
+//        
+//        let sampleVote2 = Vote(title: "샘플 투표 2", options: [
+//            VoteOption(name: "옵션 1"),
+//            VoteOption(name: "옵션 2")
+//        ])
+//        
+//        container.mainContext.insert(sampleVote1)
+//        container.mainContext.insert(sampleVote2)
+//        
+//        // 모든 객체가 삽입된 후 저장
+//        try container.mainContext.save()
+//        
+//        return VoteListView()
+//            .modelContainer(container)
+//    } catch {
+//        fatalError("프리뷰용 ModelContainer 초기화 실패: \(error.localizedDescription)")
+//    }
+    VoteEditorView() { _ in }
 }

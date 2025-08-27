@@ -36,7 +36,7 @@ struct VoteListView: View {
     
     // 투표 수정 관련
     @State private var voteToEdit: Vote? = nil
-    @State private var editIndex: Int? = nil
+//    @State private var editIndex: Int? = nil
     
     
     var body: some View {
@@ -58,15 +58,15 @@ struct VoteListView: View {
             ZStack {
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(votes.indices, id: \.self) {index in
-                            let vote = votes[index]
+                        ForEach(votes) {vote in
+//                            let vote = votes[index]
                             NavigationLink(destination: VoteView(vote: vote)) {
                                 VoteCardView(vote: vote) {
                                     voteToDelete = vote
                                     showDeleteAlert = true
                                 } onEdit: {
                                     voteToEdit = vote
-                                    editIndex = index
+//                                    editIndex = index
                                     isPresentingEdit = true
                                 }
                             }
@@ -113,7 +113,7 @@ struct VoteListView: View {
             }
             // 화면 이동 방법 2: 상태를 이용한 이동 방법
             .navigationDestination(isPresented: $isPresentingCreate) {
-                CreateVoteView() { vote in
+                VoteEditorView() { vote in
 //                    votes.append(vote)
                     modelContext.insert(vote)
                     do {
@@ -126,8 +126,8 @@ struct VoteListView: View {
             
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
-                if let vote = voteToEdit, let index = editIndex {
-                    CreateVoteView(vote: vote) { updatedVote in
+                if let vote = voteToEdit {
+                    VoteEditorView(vote: vote) { updatedVote in
                         do {
                             try modelContext.save()
                         } catch {
@@ -148,17 +148,20 @@ struct VoteListView: View {
             // 삭제 알러트
             .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
                 Button("삭제", role: .destructive) {
-                    if let target = voteToDelete, let index = votes.firstIndex(where: { $0.id == target.id }) {
+                    if let target = voteToDelete {
                         modelContext.delete(target)
                         do {
                             try modelContext.save()
+                            voteToDelete = nil// 삭제 후 상태 초기화
                         } catch {
                             print("삭제 실패: \(error)")
                         }
 //                        votes.remove(at: index)
                     }
                 }
-                Button("취소", role: .cancel) {}
+                Button("취소", role: .cancel) {
+                    voteToDelete = nil // 취소 시 상태 초기화
+                }
             } message: {
                 if let target = voteToDelete {
                     Text("'\(target.title)' 투표가 삭제됩니다.")
