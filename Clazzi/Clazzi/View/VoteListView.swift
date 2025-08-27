@@ -6,20 +6,24 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State private var votes = [
-        Vote(title: "첫 번째 투표", options: [
-            "옵션 1",
-            "옵션 2"
-        ]),
-        Vote(title: "두 번째 투표", options: [
-            "옵션 1",
-            "옵션 2"
-        ]),
-    ]
+    // 스위프트 데이터에서 가져오기
+    @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
+    
+//    @State private var votes = [
+//        Vote(title: "첫 번째 투표", options: [
+//            "옵션 1",
+//            "옵션 2"
+//        ]),
+//        Vote(title: "두 번째 투표", options: [
+//            "옵션 1",
+//            "옵션 2"
+//        ]),
+//    ]
     
     // 투표 생성 관련
     @State private var isPresentingCreate = false
@@ -124,7 +128,12 @@ struct VoteListView: View {
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit, let index = editIndex {
                     CreateVoteView(vote: vote) { updatedVote in
-                        votes[index] = updatedVote
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            print("수정 실패: \(error)")
+                        }
+//                        votes[index] = updatedVote
                     }
                 }
             }
@@ -140,7 +149,13 @@ struct VoteListView: View {
             .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
                 Button("삭제", role: .destructive) {
                     if let target = voteToDelete, let index = votes.firstIndex(where: { $0.id == target.id }) {
-                        votes.remove(at: index)
+                        modelContext.delete(target)
+                        do {
+                            try modelContext.save()
+                        } catch {
+                            print("삭제 실패: \(error)")
+                        }
+//                        votes.remove(at: index)
                     }
                 }
                 Button("취소", role: .cancel) {}

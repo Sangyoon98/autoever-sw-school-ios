@@ -11,8 +11,8 @@ struct CreateVoteView: View {
     // 뒤로 가기 (모달(바텀 시트) 닫기)
     @Environment(\.dismiss) private var dismiss
     
-    @State private var title: String
-    @State private var options: [String]
+    @State private var title: String = ""
+    @State private var options: [String] = ["", ""]
     
     // 투표 목록 화면에서 전달해줄 콜백 메서드
     var onSave: (Vote) -> Void
@@ -21,9 +21,12 @@ struct CreateVoteView: View {
     
     init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void) {
         self.existingVote = vote
-        _title = State(initialValue: vote?.title ?? "")
-        _options = State(initialValue: vote?.options ?? [""])
         self.onSave = onSave
+        
+        if let vote = vote {
+            _title = State(initialValue: vote.title)
+            _options = State(initialValue: vote.options.map { $0.name })
+        }
     }
     
     var body: some View {
@@ -64,7 +67,10 @@ struct CreateVoteView: View {
                 
                 // 생성하기 버튼
                 Button(action: {
-                    let vote = Vote(title: title, options: options)
+                    let newOptions = options.map {
+                        VoteOption(name: $0)
+                    }
+                    let vote = Vote(title: title, options: newOptions)
                     onSave(vote)
                     dismiss()
                 }) {
