@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct VoteListView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var votes = [
         Vote(title: "첫 번째 투표", options: [
             "옵션 1",
@@ -27,6 +29,10 @@ struct VoteListView: View {
     // 투표 삭제 관련
     @State private var showDeleteAlert = false
     @State private var voteToDelete: Vote? = nil
+    
+    // 투표 수정 관련
+    @State private var voteToEdit: Vote? = nil
+    @State private var editIndex: Int? = nil
     
     
     var body: some View {
@@ -55,6 +61,8 @@ struct VoteListView: View {
                                     voteToDelete = vote
                                     showDeleteAlert = true
                                 } onEdit: {
+                                    voteToEdit = vote
+                                    editIndex = index
                                     isPresentingEdit = true
                                 }
                             }
@@ -101,13 +109,23 @@ struct VoteListView: View {
             }
             // 화면 이동 방법 2: 상태를 이용한 이동 방법
             .navigationDestination(isPresented: $isPresentingCreate) {
-                CreateVoteView() { _ in }
+                CreateVoteView() { vote in
+//                    votes.append(vote)
+                    modelContext.insert(vote)
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("저장 실패: \(error)")
+                    }
+                }
             }
             
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
-                CreateVoteView() { vote in
-                    votes.append(vote)
+                if let vote = voteToEdit, let index = editIndex {
+                    CreateVoteView(vote: vote) { updatedVote in
+                        votes[index] = updatedVote
+                    }
                 }
             }
             

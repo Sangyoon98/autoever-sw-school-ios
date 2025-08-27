@@ -11,11 +11,20 @@ struct CreateVoteView: View {
     // 뒤로 가기 (모달(바텀 시트) 닫기)
     @Environment(\.dismiss) private var dismiss
     
-    @State private var title: String = ""
-    @State private var options: [String] = ["", ""]
+    @State private var title: String
+    @State private var options: [String]
     
     // 투표 목록 화면에서 전달해줄 콜백 메서드
     var onSave: (Vote) -> Void
+    
+    private var existingVote: Vote?
+    
+    init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void) {
+        self.existingVote = vote
+        _title = State(initialValue: vote?.title ?? "")
+        _options = State(initialValue: vote?.options ?? [""])
+        self.onSave = onSave
+    }
     
     var body: some View {
         NavigationStack {
@@ -50,7 +59,8 @@ struct CreateVoteView: View {
                         
                     }
                 }
-                .navigationTitle(Text("투표 생성 화면"))
+                .navigationTitle(Text(existingVote == nil ? "투표 생성 화면" : "투표 수정 화면"))
+                .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
                 
                 // 생성하기 버튼
                 Button(action: {
@@ -58,7 +68,7 @@ struct CreateVoteView: View {
                     onSave(vote)
                     dismiss()
                 }) {
-                    Text("생성하기")
+                    Text(existingVote == nil ? "생성하기" : "수정하기")
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(.blue)
