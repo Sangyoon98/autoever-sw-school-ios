@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct CreateVoteView: View {
+    // 뒤로 가기 (모달(바텀 시트) 닫기)
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var title: String = ""
     @State private var options: [String] = ["", ""]
+    
+    // 투표 목록 화면에서 전달해줄 콜백 메서드
+    var onSave: (Vote) -> Void
     
     var body: some View {
         NavigationStack {
@@ -47,7 +53,11 @@ struct CreateVoteView: View {
                 .navigationTitle(Text("투표 생성 화면"))
                 
                 // 생성하기 버튼
-                Button(action: {}) {
+                Button(action: {
+                    let vote = Vote(title: title, options: options)
+                    onSave(vote)
+                    dismiss()
+                }) {
                     Text("생성하기")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -62,5 +72,5 @@ struct CreateVoteView: View {
 }
 
 #Preview {
-    CreateVoteView()
+    CreateVoteView() { _ in }
 }

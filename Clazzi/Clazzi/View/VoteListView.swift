@@ -8,7 +8,16 @@
 import SwiftUI
 
 struct VoteListView: View {
-    let votes = ["첫 번째 투표", "두 번째 투표", "세 번째 투표"]
+    @State private var votes = [
+        Vote(title: "첫 번째 투표", options: [
+            "옵션 1",
+            "옵션 2"
+        ]),
+        Vote(title: "두 번째 투표", options: [
+            "옵션 1",
+            "옵션 2"
+        ]),
+    ]
     
     @State private var isPresentingCreate = false
     
@@ -17,8 +26,10 @@ struct VoteListView: View {
             ZStack {
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(votes, id: \.self) {vote in
-                            VoteCardView(vote: vote)
+                        ForEach(votes) {vote in
+                            NavigationLink(destination: VoteView(vote: vote)) {
+                                VoteCardView(vote: vote)
+                            }
                         }
                     }
                 }
@@ -65,17 +76,19 @@ struct VoteListView: View {
             //            }
             // 모달(바텀 시트)를 활용한 화면 띄우는 방법(상태 이용)
             .sheet(isPresented: $isPresentingCreate) {
-                CreateVoteView()
+                CreateVoteView() { vote in
+                    votes.append(vote)
+                }
             }
         }
     }
 }
 
 struct VoteCardView: View {
-    let vote: String
+    let vote: Vote
     var body: some View {
         VStack(alignment: .leading) {
-            Text(vote)
+            Text(vote.title)
                 .font(.headline)
                 .foregroundColor(.white)
             Text("투표 항목 보기")
