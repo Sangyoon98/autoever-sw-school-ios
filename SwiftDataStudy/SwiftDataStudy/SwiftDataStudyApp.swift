@@ -1,33 +1,31 @@
 //
-//  ClazziApp.swift
-//  Clazzi
+//  SwiftDataStudyApp.swift
+//  SwiftDataStudy
 //
-//  Created by 채상윤 on 8/26/25.
+//  Created by 채상윤 on 8/28/25.
 //
 
 import SwiftUI
 import SwiftData
 
 @main
-struct ClazziApp: App {
-    // 스위프트 데이터 컨테이너
+struct SwiftDataStudyApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Vote.self,
-            VoteOption.self,
-            User.self
+            Item.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("모델 컨테이너를 생성하지 못하였습니다. \(error)")
+            fatalError("Could not create ModelContainer: \(error)")
         }
     }()
-    
+
     var body: some Scene {
         WindowGroup {
-            AuthView()
+            ContentView()
         }
         .modelContainer(sharedModelContainer)
     }

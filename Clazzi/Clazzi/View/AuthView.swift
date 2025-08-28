@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AuthView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isPrivacyAgreed: Bool = false
@@ -37,6 +39,7 @@ struct AuthView: View {
                                 .textInputAutocapitalization(.never)    // 자동 대문자 방지 : iOS 15 이상
                                 .disableAutocorrection(true)    // 자동 수정 방지
                                 .padding()
+                                .padding(.trailing, 50)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color.gray, lineWidth: 1)
@@ -47,6 +50,7 @@ struct AuthView: View {
                                 .textInputAutocapitalization(.never)    // 자동 대문자 방지 : iOS 15 이상
                                 .disableAutocorrection(true)    // 자동 수정 방지
                                 .padding()
+                                .padding(.trailing, 50)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color.gray, lineWidth: 1)
@@ -91,7 +95,16 @@ struct AuthView: View {
                     }
                 }
                 
-                Button(action: {}) {
+                Button(action: {
+                    let newUser = User(email: email, password: password)
+                    modelContext.insert(newUser)
+                    do {
+                        try modelContext.save()
+                        print("회원가입 성공")
+                    } catch {
+                        print("회원가입 실패: \(error)")
+                    }
+                }) {
                     Text(isLogin ? "로그인" : "가입하기")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -107,6 +120,13 @@ struct AuthView: View {
             }
             .navigationTitle(Text(isLogin ? "로그인" : "회원가입"))
             .padding()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: UserListView()) {
+                        Image(systemName: "person")
+                    }
+                }
+            }
         }
     }
 }
