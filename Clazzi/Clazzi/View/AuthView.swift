@@ -11,7 +11,7 @@ import SwiftData
 struct AuthView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @Binding var isLoggedIn: Bool
+    @Binding var currentUserID: UUID?
     
     @Query private var users: [User]
     
@@ -102,19 +102,39 @@ struct AuthView: View {
                 
                 Button(action: {
                     if isLogin {
-                        if let currentUserIndex = users.firstIndex(where: { $0.email == email && $0.password == password }) {
+                        // 인덱스 꺼내오기
+//                        if let currentUserIndex = users.firstIndex(where: { $0.email == email && $0.password == password }) {
+//                            print("로그인 성공")
+//                            isLoggedIn = true
+//                        } else {
+//                            print("로그인 실패")
+//                        }
+                        
+                        // 아이템 꺼내오기
+                        if let currentUser = users.first(where: { $0.email == email && $0.password == password }) {
                             print("로그인 성공")
-                            isLoggedIn = true
+                            currentUserID = currentUser.id
+                            UserDefaults.standard.set(currentUser.id.uuidString, forKey: "currentUserID")
                         } else {
                             print("로그인 실패")
                         }
+                        
+                        // nil인지만 판단해도 된다.
+//                        if users.first(where: { $0.email == email && $0.password == password }) != nil {
+//                            print("로그인 성공")
+//                            isLoggedIn = true
+//                            UserDefaults.standard.set(true, forKey: "isLoggedIn")
+//                        } else {
+//                            print("로그인 실패")
+//                        }
                     } else {
                         let newUser = User(email: email, password: password)
                         modelContext.insert(newUser)
                         do {
                             try modelContext.save()
                             print("회원가입 성공")
-                            isLoggedIn = true
+                            currentUserID = newUser.id
+                            UserDefaults.standard.set(newUser.id.uuidString, forKey: "currentUserID")
                         } catch {
                             print("회원가입 실패: \(error)")
                         }
@@ -123,11 +143,12 @@ struct AuthView: View {
                     Text(isLogin ? "로그인" : "가입하기")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(!email.isEmpty && !password.isEmpty && (isPrivacyAgreed || isLogin) ? Color.blue : Color.gray)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
                 .padding(.bottom)
+                .disabled(email.isEmpty || password.isEmpty || !(isPrivacyAgreed || isLogin))
                 
                 Button(isLogin ? "회원가입 화면으로" : "로그인 화면으로") {
                     isLogin.toggle()
@@ -146,6 +167,22 @@ struct AuthView: View {
     }
 }
 
-//#Preview {
-//    AuthView()
+// 옛날 방식
+//struct AuthPreviews: PreviewProvider {
+//    struct Wrapper: View {
+//        @State var isLoggedIn: Bool = false
+//        var body: some View {
+//            AuthView(isLoggedIn: $isLoggedIn)
+//        }
+//    }
+//    
+//    static var previews: some View {
+//        Wrapper()
+//    }
 //}
+
+// 최근 방식
+#Preview {
+    @Previewable @State var currentUserID: UUID? = nil
+    AuthView(currentUserID: $currentUserID)
+}
