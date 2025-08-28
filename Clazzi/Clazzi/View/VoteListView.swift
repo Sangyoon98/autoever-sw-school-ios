@@ -11,6 +11,8 @@ import SwiftData
 struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
+    @Binding var isLoggedIn: Bool
+    
     // 스위프트 데이터에서 가져오기
     @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
     
@@ -110,6 +112,12 @@ struct VoteListView: View {
                     //                    }
                     
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: MyPageView(isLoggedIn: $isLoggedIn)) {
+                        Image(systemName: "person")
+                    }
+                }
             }
             // 화면 이동 방법 2: 상태를 이용한 이동 방법
             .navigationDestination(isPresented: $isPresentingCreate) {
@@ -206,6 +214,6 @@ struct VoteCardView: View {
     }
 }
 
-#Preview {
-    VoteListView()
-}
+//#Preview {
+//    VoteListView()
+//}

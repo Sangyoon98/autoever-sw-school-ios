@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct ClazziApp: App {
+    // 로그인 상태
+    @State var isLoggedIn: Bool = false
+    
     // 스위프트 데이터 컨테이너
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -27,7 +30,11 @@ struct ClazziApp: App {
     
     var body: some Scene {
         WindowGroup {
-            AuthView()
+            if isLoggedIn {
+                VoteListView(isLoggedIn: $isLoggedIn)
+            } else {
+                AuthView(isLoggedIn: $isLoggedIn)
+            }
         }
         .modelContainer(sharedModelContainer)
     }
