@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Vote: Identifiable {
+@Model
+class Vote: Identifiable {
     var id: UUID
     var title: String
     var options: [String: Int]  // 옵션과 투표 수

@@ -8,23 +8,23 @@
 import SwiftUI
 
 struct VoteView: View {
-    @ObservedObject var viewModel: VoteViewModel
+    @Bindable var vote: Vote    // SwiftData 모델은 @Bindable로 바인딩
     @State var showingEdit = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                Text(viewModel.vote.title)
+                Text(vote.title)
                     .font(.title)
                     .padding()
                 
-                ForEach(Array(viewModel.vote.options.keys.sorted()), id: \.self) { option in
+                ForEach(Array(vote.options.keys.sorted()), id: \.self) { option in
                     HStack {
                         Text(option)
                         Spacer()
-                        Text("\(viewModel.vote.options[option] ?? 0)표")
+                        Text("\(vote.options[option] ?? 0)표")
                         Button(action: {
-                            viewModel.voteForOption(option)
+                            vote.options[option, default: 0] += 1
                         }) {
                             Text("투표하기")
                                 .padding()
@@ -43,8 +43,9 @@ struct VoteView: View {
                 }
             }
             .sheet(isPresented: $showingEdit) {
-                VoteEditorView(viewModel: VoteEditorViewModel(vote: viewModel.vote)) { updateVote in
-                    viewModel.vote = updateVote
+                VoteEditorView(viewModel: VoteEditorViewModel(vote: vote)) { updateVote in
+                    vote.title = updateVote.title
+                    vote.options = updateVote.options
                 }
             }
         }
@@ -52,5 +53,5 @@ struct VoteView: View {
 }
 
 #Preview {
-    VoteView(viewModel: VoteViewModel(vote: Vote(title: "테스트 투표", options: ["항목 1", "항목 2"])))
+    VoteView(vote: Vote(title: "테스트 투표", options: ["항목 1", "항목 2"]))
 }
