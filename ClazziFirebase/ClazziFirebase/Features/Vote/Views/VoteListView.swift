@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct VoteListView: View {
-    @Binding var currentUser: FirebaseAuth.User?
+    @EnvironmentObject var session: UserSession
     
     // 투표 생성 관련
     @State private var isPresentingCreate = false
@@ -55,7 +55,7 @@ struct VoteListView: View {
 //                }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: MyPageView(currentUser: $currentUser)) {
+                    NavigationLink(destination: MyPageView()) {
                         Image(systemName: "person")
                     }
                 }

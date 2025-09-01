@@ -9,16 +9,16 @@ import SwiftUI
 import FirebaseAuth
 
 struct MyPageView: View {
-    @Binding var currentUser: FirebaseAuth.User?
+    @EnvironmentObject var session: UserSession
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 32) {
-                if let currentUser = currentUser {
+                if let user = session.user {
                     Spacer()
                     Text("로그인 된 이메일:")
                         .font(.headline)
-                    Text(currentUser.email ?? "사용자 이메일이 없습니다.")
+                    Text(user.email ?? "사용자 이메일이 없습니다.")
                         .font(.title)
                         .foregroundColor(.blue)
                         .multilineTextAlignment(.center)
@@ -27,7 +27,6 @@ struct MyPageView: View {
                     
                     Button(action: {
                         try? Auth.auth().signOut()
-                        self.currentUser = nil
                     }) {
                         Text("로그아웃")
                             .frame(maxWidth: .infinity)

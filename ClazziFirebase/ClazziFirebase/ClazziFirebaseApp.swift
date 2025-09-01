@@ -12,7 +12,10 @@ import FirebaseAuth
 @main
 struct ClazziFirebaseApp: App {
     // 로그인 상태
-    @State var currentUser: FirebaseAuth.User? = nil
+    @StateObject var session = UserSession()
+    
+    // 인트로 화면 상태
+    @State private var isLoading = true
     
     init() {
         FirebaseApp.configure()
@@ -21,15 +24,19 @@ struct ClazziFirebaseApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if currentUser == nil {
-                    AuthView(currentUser: $currentUser)
+                if isLoading {
+                    IntroView()
+                } else if session.user == nil {
+                    AuthView()
                 } else {
-                    VoteListView(currentUser: $currentUser)
+                    VoteListView()
                 }
             }
+            .environmentObject(session)
             .onAppear {
                 Task {
-                    currentUser = Auth.auth().currentUser
+                    try await Task.sleep(nanoseconds: 2_000_000_000)    // 2초
+                    isLoading = false
                 }
             }
         }
