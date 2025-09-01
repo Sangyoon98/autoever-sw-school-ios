@@ -253,33 +253,49 @@ struct VoteCardView: View {
 
 // 최근 방식
 #Preview {
-    @Previewable @State var currentUserID: UUID? = UUID(uuidString: "fake UUID")
+    // 1. 프리뷰 전용 inMemory 컨테이너 생성
+    let container = try! ModelContainer(
+        for: Vote.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
     
-    do {
-        // 인메모리 ModelContainer 생성
-        let container = try ModelContainer(
-            for: Vote.self, VoteOption.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-        
-        // 샘플 데이터 추가
-        let sampleVote1 = Vote(title: "샘플 투표 1", options: [
-            VoteOption(name: "옵션 1"),
-            VoteOption(name: "옵션 2")
-        ])
-        let sampleVote2 = Vote(title: "샘플 투표 2", options: [
-            VoteOption(name: "옵션 A"),
-            VoteOption(name: "옵션 B")
-        ])
-        container.mainContext.insert(sampleVote1)
-        container.mainContext.insert(sampleVote2)
-        
-        // 모든 객체가 삽입된 후 저장
-        try container.mainContext.save()
-        
-        return VoteListView(currentUserID: $currentUserID)
-            .modelContainer(container)
-    } catch {
-        fatalError("프리뷰용 ModelContainer 초기화 실패: (error.localizedDescription)")
-    }
+    // 2. 더미 데이터 삽입
+    let context = container.mainContext
+    context.insert(Vote(title: "SwiftUI 공부하기"))
+    context.insert(Vote(title: "SwiftUI 공부하기"))
+    context.insert(Vote(title: "SwiftUI 공부하기"))
+    
+    // 3. 뷰에 컨테이너 주입
+    return VoteListView(currentUserID: .constant(UUID()))   // 가짜 사용자 ID 주입
+        .modelContainer(container)
+    
+//    @Previewable @State var currentUserID: UUID? = UUID(uuidString: "fake UUID")
+//    
+//    do {
+//        // 인메모리 ModelContainer 생성
+//        let container = try ModelContainer(
+//            for: Vote.self, VoteOption.self,
+//            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+//        )
+//        
+//        // 샘플 데이터 추가
+//        let sampleVote1 = Vote(title: "샘플 투표 1", options: [
+//            VoteOption(name: "옵션 1"),
+//            VoteOption(name: "옵션 2")
+//        ])
+//        let sampleVote2 = Vote(title: "샘플 투표 2", options: [
+//            VoteOption(name: "옵션 A"),
+//            VoteOption(name: "옵션 B")
+//        ])
+//        container.mainContext.insert(sampleVote1)
+//        container.mainContext.insert(sampleVote2)
+//        
+//        // 모든 객체가 삽입된 후 저장
+//        try container.mainContext.save()
+//        
+//        return VoteListView(currentUserID: $currentUserID)
+//            .modelContainer(container)
+//    } catch {
+//        fatalError("프리뷰용 ModelContainer 초기화 실패: (error.localizedDescription)")
+//    }
 }
