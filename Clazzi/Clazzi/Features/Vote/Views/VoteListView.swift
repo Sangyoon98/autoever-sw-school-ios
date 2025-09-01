@@ -136,12 +136,7 @@ struct VoteListView: View {
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit {
                     VoteEditorView(vote: vote) { updatedVote in
-                        do {
-                            try modelContext.save()
-                        } catch {
-                            print("수정 실패: \(error)")
-                        }
-                        //                        votes[index] = updatedVote
+                        
                     }
                 }
             }
@@ -156,15 +151,9 @@ struct VoteListView: View {
             // 삭제 알러트
             .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
                 Button("삭제", role: .destructive) {
-                    if let target = voteToDelete {
-                        modelContext.delete(target)
-                        do {
-                            try modelContext.save()
-                            voteToDelete = nil// 삭제 후 상태 초기화
-                        } catch {
-                            print("삭제 실패: \(error)")
-                        }
-                        //                        votes.remove(at: index)
+                    if let vote = voteToDelete {
+                        modelContext.delete(vote)
+                        voteToDelete = nil
                     }
                 }
                 Button("취소", role: .cancel) {

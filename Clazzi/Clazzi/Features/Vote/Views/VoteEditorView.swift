@@ -18,16 +18,14 @@ struct VoteEditorView: View {
     // 투표 목록 화면에서 전달해줄 콜백 메서드
     var onSave: (Vote) -> Void
     
-    private var existingVote: Vote?
+    private var vote: Vote?
     
     init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void) {
-        self.existingVote = vote
+        self.vote = vote
         self.onSave = onSave
-        
-        if let vote = vote {
-            _title = State(initialValue: vote.title)
-            _options = State(initialValue: vote.options.map { $0.name })
-        }
+        // 수정일 경우 초기값 설정
+        self.title = vote?.title ?? ""
+        self.options = vote?.options.map { $0.name } ?? ["", ""]
     }
     
     var body: some View {
@@ -63,12 +61,12 @@ struct VoteEditorView: View {
                         
                     }
                 }
-                .navigationTitle(Text(existingVote == nil ? "투표 생성 화면" : "투표 수정 화면"))
-                .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
+                .navigationTitle(Text(vote == nil ? "투표 생성 화면" : "투표 수정 화면"))
+//                .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
                 
                 // 생성, 수정하기 버튼
                 Button(action: {
-                    if let vote = existingVote {
+                    if let vote = vote {
                         // 기존 객체를 직접 수정
                         vote.title = title
                         
@@ -81,7 +79,7 @@ struct VoteEditorView: View {
                     }
                     dismiss()
                 }) {
-                    Text(existingVote == nil ? "생성하기" : "수정하기")
+                    Text(vote == nil ? "생성하기" : "수정하기")
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(.blue)
@@ -93,36 +91,17 @@ struct VoteEditorView: View {
         }
     }
 }
-
-#Preview {
-//    do {
-//        // 인메모리 ModelContainer 생성
-//        let container = try ModelContainer(
-//            for: Vote.self, VoteOption.self,
-//            configurations: ModelConfiguration(isStoredInMemory: true)
-//        )
-//        
-//        // 샘플 데이터 추가
-//        let sampleVote1 = Vote(title: "샘플 투표 1", options: [
-//            VoteOption(name: "옵션 1"),
-//            VoteOption(name: "옵션 2")
-//        ])
-//        
-//        let sampleVote2 = Vote(title: "샘플 투표 2", options: [
-//            VoteOption(name: "옵션 1"),
-//            VoteOption(name: "옵션 2")
-//        ])
-//        
-//        container.mainContext.insert(sampleVote1)
-//        container.mainContext.insert(sampleVote2)
-//        
-//        // 모든 객체가 삽입된 후 저장
-//        try container.mainContext.save()
-//        
-//        return VoteListView()
-//            .modelContainer(container)
-//    } catch {
-//        fatalError("프리뷰용 ModelContainer 초기화 실패: \(error.localizedDescription)")
-//    }
+#Preview("투표 생성") {
     VoteEditorView() { _ in }
+}
+
+#Preview("투표 수정") {
+    // 샘플 투표 생성
+    let sampleVote = Vote(title: "샘플 투표", options: [
+        VoteOption(name: "옵션 1"),
+        VoteOption(name: "옵션 2")
+    ])
+    
+    // 뷰에 샘플 투표 전달
+    VoteEditorView(vote: sampleVote) { _ in }
 }
