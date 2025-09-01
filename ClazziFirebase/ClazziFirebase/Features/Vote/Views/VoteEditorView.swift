@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct VoteEditorView: View {
+    @EnvironmentObject var session: UserSession
     // 뒤로 가기 (모달(바텀 시트) 닫기)
     @Environment(\.dismiss) private var dismiss
     
@@ -63,18 +64,24 @@ struct VoteEditorView: View {
                 }
                 .navigationTitle(Text(vote == nil ? "투표 생성 화면" : "투표 수정 화면"))
 //                .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
+                .onAppear {
+                    if let vote = vote {
+                        title = vote.title
+                        options = vote.options.map { $0.name }
+                    }
+                }
                 
                 // 생성, 수정하기 버튼
                 Button(action: {
-                    if let vote = vote {
+                    if var vote = vote {    // 투표 수정
                         // 기존 객체를 직접 수정
                         vote.title = title
                         
                         // 기존 옵션 삭제 후 새로 생성
                         vote.options = options.map { VoteOption(name: $0) }
                         onSave(vote)
-                    } else {
-                        let newVote = Vote(title: title, options: options.map { VoteOption(name: $0) })
+                    } else {    // 투표 생성
+                        let newVote = Vote(title: title, createdBy: session.user?.uid ?? "", options: options.map { VoteOption(name: $0) })
                         onSave(newVote)
                     }
                     dismiss()
@@ -90,18 +97,4 @@ struct VoteEditorView: View {
             .padding()
         }
     }
-}
-#Preview("투표 생성") {
-    VoteEditorView() { _ in }
-}
-
-#Preview("투표 수정") {
-    // 샘플 투표 생성
-    let sampleVote = Vote(title: "샘플 투표", options: [
-        VoteOption(name: "옵션 1"),
-        VoteOption(name: "옵션 2")
-    ])
-    
-    // 뷰에 샘플 투표 전달
-    VoteEditorView(vote: sampleVote) { _ in }
 }

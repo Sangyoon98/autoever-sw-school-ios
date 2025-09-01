@@ -35,7 +35,7 @@ struct ClazziFirebaseApp: App {
             .environmentObject(session)
             .onAppear {
                 Task {
-                    try await Task.sleep(nanoseconds: 2_000_000_000)    // 2초
+                    try await Task.sleep(seconds: 2)    // 2초
                     isLoading = false
                 }
             }

@@ -10,6 +10,7 @@ import FirebaseAuth
 
 struct VoteListView: View {
     @EnvironmentObject var session: UserSession
+    @StateObject private var voteViewModel = VoteViewModel()
     
     // 투표 생성 관련
     @State private var isPresentingCreate = false
@@ -23,36 +24,33 @@ struct VoteListView: View {
     @State private var voteToDelete: Vote? = nil
     
     var body: some View {
-        Text("투표 목록 화면")
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 16) {
-//                        ForEach(votes) {vote in
-//                            //                            let vote = votes[index]
-//                            NavigationLink(destination: VoteView(vote: vote, currentUserID: $currentUserID)) {
-//                                VoteCardView(vote: vote) {
-//                                    voteToDelete = vote
-//                                    showDeleteAlert = true
-//                                } onEdit: {
-//                                    voteToEdit = vote
-//                                    //                                    editIndex = index
-//                                    isPresentingEdit = true
-//                                }
-//                            }
-//                        }
+                    ForEach(voteViewModel.votes) {vote in
+                        NavigationLink(destination: VoteView(vote: vote)) {
+                            VoteCardView(vote: vote) {
+                                voteToDelete = vote
+                                showDeleteAlert = true
+                            } onEdit: {
+                                voteToEdit = vote
+                                isPresentingEdit = true
+                            }
+                        }
+                    }
                 }
                 
             }
             .padding()
             .navigationBarTitle("투표 목록 화면")
             .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    NavigationLink(destination: VoteEditorView { newVote in
-//                        modelContext.insert(newVote)
-//                    }) {
-//                        Image(systemName: "plus")
-//                    }
-//                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: VoteEditorView { newVote in
+                        voteViewModel.createVote(newVote)
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: MyPageView()) {
@@ -77,29 +75,27 @@ struct VoteListView: View {
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit {
                     VoteEditorView(vote: vote) { updatedVote in
-                        
+                        voteViewModel.updateVote(updatedVote)
                     }
                 }
             }
             
             // 삭제 알러트
-//            .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
-//                Button("삭제", role: .destructive) {
-//                    if let vote = voteToDelete {
-//                        modelContext.delete(vote)
-//                        voteToDelete = nil
-//                    }
-//                }
-//                Button("취소", role: .cancel) {
-//                    voteToDelete = nil // 취소 시 상태 초기화
-//                }
-//            } message: {
-//                if let target = voteToDelete {
-//                    Text("'\(target.title)' 투표가 삭제됩니다.")
-//                }
-//            }
-            
-            
+            .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+                Button("삭제", role: .destructive) {
+                    if let vote = voteToDelete {
+                        voteViewModel.deleteVote(vote)
+                        voteToDelete = nil
+                    }
+                }
+                Button("취소", role: .cancel) {
+                    voteToDelete = nil // 취소 시 상태 초기화
+                }
+            } message: {
+                if let target = voteToDelete {
+                    Text("'\(target.title)' 투표가 삭제됩니다.")
+                }
+            }
         }
     }
 }

@@ -6,37 +6,31 @@
 //
 
 import Foundation
-import SwiftData
+import FirebaseFirestore
 
-@Model  // 스위프트 데이터에서 사용할 수 있는 모델로 바꿔주는 Attribute
-class Vote {
-    var id = UUID()
+struct Vote: Identifiable, Codable {
+    @DocumentID var id: String?
     var title: String
-    @Relationship(deleteRule: .cascade)
+    var createdBy: String
+    var createdAt: Date
     var options: [VoteOption]
     
-    init(title: String, options: [VoteOption] = []) {
+    init(title: String, createdBy: String, options: [VoteOption] = []) {
+        self.id = nil
         self.title = title
         self.options = options
+        self.createdBy = createdBy
+        self.createdAt = Date()
     }
 }
 
-@Model
-class VoteOption {
+struct VoteOption: Identifiable, Codable {
+    @DocumentID var id: String?
     var name: String
-    var voters: [UUID] = [] // 여기에 투표자 ID 저장
+    var voters: [String] = [] // 여기에 투표자 ID 저장
     
     init(name: String) {
+        self.id = nil
         self.name = name
-    }
-    
-    // 해당 투표 항목에 투표자가 몇 명 있는지 : 투표수
-    var votes: Int {
-        voters.count
-    }
-    
-    // 로그인한 유저가 이미 투표했는지
-    func hasVoted(userID: UUID) -> Bool {
-        voters.contains(userID)
     }
 }
