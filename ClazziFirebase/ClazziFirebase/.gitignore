@@ -15,7 +15,7 @@ Podfile.lock
 Carthage/Build/
 
 # Firebase
-.GoogleService-Info.plist
+GoogleService-Info.plist
 
 # 기타 환경 파일
 *.xcuserstate
