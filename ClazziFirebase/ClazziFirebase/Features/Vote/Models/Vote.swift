@@ -31,8 +31,9 @@ struct VoteOption: Identifiable, Codable {
     var name: String
     var voters: [String] = [] // 여기에 투표자 ID 저장
     
-    init(name: String) {
+    init(name: String, voters: [String] = []) {
         self.id = nil
         self.name = name
+        self.voters = voters
     }
 }
