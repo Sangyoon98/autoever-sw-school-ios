@@ -49,12 +49,21 @@ struct VoteEditorView: View {
                                 .font(.headline)
                             
                             ForEach(options.indices, id: \.self) { index in
-                                TextField("항목 \(index + 1)", text: $options[index])
-                                    .padding()
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.gray, lineWidth: 1)
-                                    )
+                                HStack {
+                                    TextField("항목 \(index + 1)", text: $options[index])
+                                        .padding()
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray, lineWidth: 1)
+                                        )
+                                    Button(action: {
+                                        options.remove(at: index)
+                                    }) {
+                                        Image(systemName: "xmark")
+                                    }
+                                    .foregroundColor(.gray)
+                                }
+                                .padding(.bottom, 8)
                             }
                             
                             Button("항목 추가") {

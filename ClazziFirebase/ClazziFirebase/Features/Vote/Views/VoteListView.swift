@@ -28,7 +28,9 @@ struct VoteListView: View {
             ScrollView {
                 LazyVStack(spacing: 16) {
                     ForEach(voteViewModel.votes) {vote in
-                        NavigationLink(destination: VoteView(vote: vote)) {
+                        NavigationLink(destination: VoteView(vote: vote) { vote in
+                            voteViewModel.updateVote(vote)
+                        }) {
                             VoteCardView(vote: vote) {
                                 voteToDelete = vote
                                 showDeleteAlert = true
