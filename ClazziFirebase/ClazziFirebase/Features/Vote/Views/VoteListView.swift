@@ -101,6 +101,7 @@ struct VoteListView: View {
 }
 
 struct VoteCardView: View {
+    @EnvironmentObject var session: UserSession
     let vote: Vote
     let onDelete: () -> Void
     let onEdit: () -> Void
@@ -116,13 +117,15 @@ struct VoteCardView: View {
                     .foregroundColor(.white)
             }
             Spacer()
-            Button(action: { onEdit() }) {
-                Image(systemName: "pencil")
-                    .foregroundStyle(.white)
-            }
-            Button(action: { onDelete() }) {
-                Image(systemName: "trash")
-                    .foregroundStyle(.white)
+            if let user = session.user, vote.createdBy == user.uid {
+                Button(action: { onEdit() }) {
+                    Image(systemName: "pencil")
+                        .foregroundStyle(.white)
+                }
+                Button(action: { onDelete() }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.white)
+                }
             }
         }
         .padding(16)
