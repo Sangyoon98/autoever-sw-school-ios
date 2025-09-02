@@ -29,7 +29,9 @@ struct VoteListView: View {
                 LazyVStack(spacing: 16) {
                     ForEach(voteViewModel.votes) {vote in
                         NavigationLink(destination: VoteView(vote: vote) { vote in
-                            voteViewModel.updateVote(vote)
+                            Task {
+                                await voteViewModel.updateVote(vote)
+                            }
                         }) {
                             VoteCardView(vote: vote) {
                                 voteToDelete = vote
@@ -56,30 +58,20 @@ struct VoteListView: View {
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: MyPageView()) {
-                        Image(systemName: "person")
-                    }
-                }
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    NavigationLink(destination: MyPageView()) {
+//                        Image(systemName: "person")
+//                    }
+//                }
             }
-            // 화면 이동 방법 2: 상태를 이용한 이동 방법
-            //            .navigationDestination(isPresented: $isPresentingCreate) {
-            //                VoteEditorView() { vote in
-            //                    //                    votes.append(vote)
-            //                    modelContext.insert(vote)
-            //                    do {
-            //                        try modelContext.save()
-            //                    } catch {
-            //                        print("저장 실패: \(error)")
-            //                    }
-            //                }
-            //            }
             
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit {
                     VoteEditorView(vote: vote) { updatedVote, selectedImage in
-                        voteViewModel.updateVote(updatedVote)
+                        Task {
+                            await voteViewModel.updateVote(updatedVote, image: selectedImage)
+                        }
                     }
                 }
             }

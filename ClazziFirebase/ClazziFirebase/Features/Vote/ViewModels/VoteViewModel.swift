@@ -15,6 +15,7 @@ class VoteViewModel: ObservableObject {
     @Published var votes: [Vote] = []
     
     private let db = Firestore.firestore()
+    private let storage = Storage.storage()
     
     init() {
         fetchVotes()
@@ -55,11 +56,27 @@ class VoteViewModel: ObservableObject {
     }
     
     // 투표 수정
-    func updateVote(_ vote: Vote) {
+    func updateVote(_ vote: Vote, image: UIImage? = nil) async {
         guard let voteId = vote.id else { return }
         
+        var updateVote = vote
+        
+        // 이미지가 교체되었을 때만 처리
+        if let image = image {
+            // 기존 이미지 삭제
+            if let oldURL = vote.imageURL {
+                deleteImage(urlString: oldURL)
+            }
+            
+            do {
+                updateVote.imageURL = try await uploadImage(image)
+            } catch {
+                print("이미지 업로드 실패: \(error)")
+            }
+        }
+        
         do {
-            try db.collection("votes").document(voteId).setData(from: vote)
+            try db.collection("votes").document(voteId).setData(from: updateVote)
             print("수정 성공")
         } catch {
             print("Firestore 업로드 실패: \(error)")
@@ -69,6 +86,11 @@ class VoteViewModel: ObservableObject {
     // 투표 삭제
     func deleteVote(_ vote: Vote) {
         guard let voteId = vote.id else { return }
+        
+        // 이미지가 있으면 먼저 삭제
+        if let imageURL = vote.imageURL {
+            deleteImage(urlString: imageURL)
+        }
         
         db.collection("votes").document(voteId).delete() { error in
             if let error = error {
@@ -86,7 +108,7 @@ class VoteViewModel: ObservableObject {
         }
         
         let fileName = UUID().uuidString
-        let ref = Storage.storage().reference().child("voteImages/\(fileName).jpg")
+        let ref = storage.reference().child("voteImages/\(fileName).jpg")
         
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
@@ -96,5 +118,17 @@ class VoteViewModel: ObservableObject {
         
         let url = try await ref.downloadURL()
         return url.absoluteString
+    }
+    
+    // 기존 이미지 삭제
+    private func deleteImage(urlString: String) {
+        let ref = storage.reference(forURL: urlString)
+        ref.delete { error in
+            if let error = error {
+                print("기존 이미지 삭제 실패: \(error)")
+            } else {
+                print("기존 이미지 삭제 성공")
+            }
+        }
     }
 }

@@ -171,6 +171,18 @@ struct VoteEditorView: View {
             .sheet(isPresented: $showImagePicker) {
                 ImagePicker(image: $selectedImage)
             }
+            .onAppear {
+                // 이미지 초깃값 설정
+                if let vote = vote, let imageURL = vote.imageURL, let url = URL(string: imageURL) {
+                    DispatchQueue.global().async {
+                        if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                            DispatchQueue.main.async {
+                                self.selectedImage = uiImage
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

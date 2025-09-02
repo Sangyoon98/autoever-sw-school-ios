@@ -17,9 +17,22 @@
 		534B13F42E65372100BC78E9 /* ClazziFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClazziFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		534B143E2E66B7E700BC78E9 /* Exceptions for "ClazziFirebase" folder in "ClazziFirebase" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 534B13F32E65372100BC78E9 /* ClazziFirebase */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		534B13F62E65372100BC78E9 /* ClazziFirebase */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				534B143E2E66B7E700BC78E9 /* Exceptions for "ClazziFirebase" folder in "ClazziFirebase" target */,
+			);
 			path = ClazziFirebase;
 			sourceTree = "<group>";
 		};
@@ -271,6 +284,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClazziFirebase/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "클라씨";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -298,6 +313,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClazziFirebase/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "클라씨";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
