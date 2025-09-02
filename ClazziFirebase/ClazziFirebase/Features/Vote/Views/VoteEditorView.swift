@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SwiftData
+import UIKit
 
 struct VoteEditorView: View {
     @EnvironmentObject var session: UserSession
@@ -17,14 +17,19 @@ struct VoteEditorView: View {
     @State private var options: [String] = ["", ""]
     
     // 투표 목록 화면에서 전달해줄 콜백 메서드
-    var onSave: (Vote) -> Void
+    var onSave: (Vote, UIImage?) -> Void
     
     private var vote: Vote? = nil
     
     // 토스트 메세지
     @State var toastMessage: String? = nil
     
-    init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void) {
+    // 이미지 피커 시트 상태
+    @State var showImagePicker: Bool = false
+    // 이미지 피커에서 받아온 이미지
+    @State var selectedImage: UIImage? = nil
+    
+    init(vote: Vote? = nil, onSave: @escaping (Vote, UIImage?) -> Void) {
         self.vote = vote
         self.onSave = onSave
         // 수정일 경우 초기값 설정
@@ -45,6 +50,28 @@ struct VoteEditorView: View {
                                         .stroke(Color.gray, lineWidth: 1)
                                 )
                                 .padding(.bottom, 32)
+                            
+                            // 이미지 뷰
+                            Button(action: {
+                                showImagePicker = true
+                            }) {
+                                if let image = selectedImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                } else {
+                                    Image(systemName: "photo.fill")
+                                        .resizable()
+                                        .scaledToFill()
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            .frame(width: 150, height: 150)
+                            .clipShape(Circle())
+                            .shadow(radius: 4)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.bottom, 32)
+                            
                             Text("투표 항목")
                                 .font(.headline)
                             
@@ -120,10 +147,10 @@ struct VoteEditorView: View {
                             
                             // 기존 옵션 삭제 후 새로 생성
                             vote.options = options.map { VoteOption(name: $0) }
-                            onSave(vote)
+                            onSave(vote, selectedImage)
                         } else {    // 투표 생성
                             let newVote = Vote(title: title, createdBy: session.user?.uid ?? "", options: options.map { VoteOption(name: $0) })
-                            onSave(newVote)
+                            onSave(newVote, selectedImage)
                         }
                         dismiss()
                     }) {
@@ -141,6 +168,38 @@ struct VoteEditorView: View {
                 }
             }
             .padding()
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $selectedImage)
+            }
+        }
+    }
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    @Environment(\.dismiss) var dismiss
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) { }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+        init(_ parent: ImagePicker) { self.parent = parent }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
+            }
+            parent.dismiss()
         }
     }
 }

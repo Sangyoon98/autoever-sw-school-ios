@@ -47,8 +47,10 @@ struct VoteListView: View {
             .navigationBarTitle("투표 목록 화면")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: VoteEditorView { newVote in
-                        voteViewModel.createVote(newVote)
+                    NavigationLink(destination: VoteEditorView { newVote, selectedImage in
+                        Task {
+                            await voteViewModel.createVote(newVote, image: selectedImage)
+                        }
                     }) {
                         Image(systemName: "plus")
                     }
@@ -61,22 +63,22 @@ struct VoteListView: View {
                 }
             }
             // 화면 이동 방법 2: 상태를 이용한 이동 방법
-//            .navigationDestination(isPresented: $isPresentingCreate) {
-//                VoteEditorView() { vote in
-//                    //                    votes.append(vote)
-//                    modelContext.insert(vote)
-//                    do {
-//                        try modelContext.save()
-//                    } catch {
-//                        print("저장 실패: \(error)")
-//                    }
-//                }
-//            }
+            //            .navigationDestination(isPresented: $isPresentingCreate) {
+            //                VoteEditorView() { vote in
+            //                    //                    votes.append(vote)
+            //                    modelContext.insert(vote)
+            //                    do {
+            //                        try modelContext.save()
+            //                    } catch {
+            //                        print("저장 실패: \(error)")
+            //                    }
+            //                }
+            //            }
             
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit {
-                    VoteEditorView(vote: vote) { updatedVote in
+                    VoteEditorView(vote: vote) { updatedVote, selectedImage in
                         voteViewModel.updateVote(updatedVote)
                     }
                 }
